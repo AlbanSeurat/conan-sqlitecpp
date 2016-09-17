@@ -8,7 +8,7 @@ class SQLiteCppConan(ConanFile):
     license = "MIT"
     options = {"lint": [True, False]}
     default_options = "lint=False"
-    # No exports necessary
+    exports = "FindSQLiteCpp.cmake"
 
     def source(self):
         self.run("git clone https://github.com/SRombauts/SQLiteCpp.git")
@@ -20,6 +20,7 @@ class SQLiteCppConan(ConanFile):
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
+        self.copy("FindSQLiteCpp.cmake", ".", ".")
         self.copy("*.h", dst="include", src="SQLiteCpp/include")
         self.copy("*.lib", dst="lib", src=".", keep_path=False)
         self.copy("*.a", dst="lib", src=".", keep_path=False)
