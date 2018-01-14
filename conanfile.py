@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class SQLiteCppConan(ConanFile):
     name = "SQLiteCpp"
-    version = "2.0.0"
+    version = "2.2.0"
     settings = "os", "compiler", "build_type", "arch"
     url = "https://github.com/AlbanSeurat/conan-sqlitecpp"
     license = "MIT"
@@ -12,12 +12,16 @@ class SQLiteCppConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/SRombauts/SQLiteCpp.git")
+        self.run("cd SQLiteCpp && git checkout %s" % (version))
 
     def build(self):
-        cmake = CMake(self.settings)
-        lint = "-DSQLITECPP_RUN_CPPLINT=0" if not self.options.lint else ""
-        self.run('cmake %s/SQLiteCpp %s %s' % (self.conanfile_directory, cmake.command_line, lint))
-        self.run("cmake --build . %s" % cmake.build_config)
+        cmake = CMake(self)
+        if self.options.lint:
+            cmake.definitions["SQLITECPP_RUN_CPPLINT"] = 1
+        cmake.configure(source_folder="SQLiteCpp")
+        cmake.build()
+        #self.run('cmake %s/SQLiteCpp %s %s' % (self.conanfile_directory, cmake.command_line, lint))
+        #self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
         self.copy("FindSQLiteCpp.cmake", ".", ".")
