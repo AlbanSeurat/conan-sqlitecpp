@@ -1,6 +1,7 @@
 from conans import ConanFile, CMake
 
 class SQLiteCppConan(ConanFile):
+
     name = "SQLiteCpp"
     version = "2.2.0"
     settings = "os", "compiler", "build_type", "arch"
@@ -12,7 +13,7 @@ class SQLiteCppConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/SRombauts/SQLiteCpp.git")
-        self.run("cd SQLiteCpp && git checkout %s" % (version))
+        self.run("cd SQLiteCpp && git checkout %s" % (self.version))
 
     def build(self):
         cmake = CMake(self)
